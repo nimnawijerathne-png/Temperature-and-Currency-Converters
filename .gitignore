@@ -1,0 +1,24 @@
+# Node
+node_modules/
+npm-debug.log
+
+# Maven / Java
+target/
+*.class
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Docker leftovers (from our debugging session)
+app-check.jar
+app-check.zip
+app-check2.jar
+app-check2.zip
+app-check-extracted/
+app-check2-extracted/

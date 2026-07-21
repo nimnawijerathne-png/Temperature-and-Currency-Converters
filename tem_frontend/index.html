@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temperature Converter Client</title>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #0f2447 0%, #1a3d7c 50%, #2563eb 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .container {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(15, 36, 71, 0.4);
+        width: 440px;
+        border: 1px solid #dbe6fb;
+    }
+
+    h2 {
+        text-align: center;
+        color: #0f2447;
+        margin: 0 0 4px 0;
+        font-size: 23px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 26px;
+    }
+
+    .section-label {
+        color: #1d4ed8;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        margin-bottom: 10px;
+        margin-top: 22px;
+    }
+
+    .auth-box {
+        background-color: #eef4ff;
+        border-radius: 10px;
+        padding: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #334155;
+        font-size: 14px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px 14px;
+        margin-top: 4px;
+        box-sizing: border-box;
+        border: 2px solid #dbe6fb;
+        border-radius: 10px;
+        font-size: 15px;
+        color: #0f2447;
+        background-color: #f8faff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        font-family: inherit;
+    }
+
+    input::placeholder {
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 13px;
+        color: #94a3b8;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        background-color: #ffffff;
+    }
+
+    .btn-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+    }
+
+    button {
+        border: none;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 13px;
+        border-radius: 10px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        font-family: inherit;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: white;
+        flex: 1.4;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-secondary {
+        background-color: #e2e8f0;
+        color: #0f2447;
+        flex: 1;
+    }
+
+    .btn-full {
+        background-color: #e2e8f0;
+        color: #0f2447;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-primary:hover {
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+    }
+
+    button:active {
+        transform: translateY(0);
+    }
+
+    .output-box {
+        margin-top: 22px;
+        padding: 16px;
+        background-color: #eef4ff;
+        border-radius: 10px;
+        border-left: 4px solid #2563eb;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        color: #0f2447;
+        min-height: 20px;
+        max-height: 260px;
+        overflow-y: auto;
+    }
+
+    .error-text {
+        color: #dc2626;
+        font-weight: 600;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🌡️ Temperature Converter</h2>
+    <div class="subtitle">Spring Boot · Node Proxy · MongoDB</div>
+
+    <div class="section-label">AUTHENTICATION</div>
+    <div class="auth-box">
+        <div class="form-group">
+            <label for="apiKey">X-API-KEY</label>
+            <input type="text" id="apiKey" placeholder="e.g. SUPER-SECRET-DEV-KEY-123">
+        </div>
+    </div>
+
+    <div class="section-label">CONVERT TEMPERATURE</div>
+
+    <div class="form-group">
+        <label for="tempValue">Temperature Value</label>
+        <input type="number" id="tempValue" placeholder="e.g. 100">
+    </div>
+
+    <div class="form-group">
+        <label for="tempUnit">Unit</label>
+        <select id="tempUnit">
+            <option value="Celsius">Celsius (C)</option>
+            <option value="Fahrenheit">Fahrenheit (F)</option>
+        </select>
+    </div>
+
+    <div class="btn-row">
+        <button class="btn-primary" onclick="convertTemperature()">Convert &amp; Save</button>
+        <button class="btn-secondary" onclick="checkSafety()">Safety Check</button>
+    </div>
+
+    <button class="btn-full" onclick="viewHistory()">View History</button>
+
+    <div class="output-box" id="outputArea">Result will appear here...</div>
+</div>
+
+<script>
+    function getApiKey() {
+        return document.getElementById('apiKey').value.trim();
+    }
+
+    function showError(message) {
+        document.getElementById('outputArea').innerHTML =
+            '<span class="error-text">Error: ' + message + '</span>';
+    }
+
+    async function convertTemperature() {
+        const valueInput = document.getElementById('tempValue').value;
+        const unitInput = document.getElementById('tempUnit').value;
+        const outputArea = document.getElementById('outputArea');
+        const apiKey = getApiKey();
+
+        if (!valueInput) {
+            showError('Please enter a numeric temperature value.');
+            return;
+        }
+        if (!apiKey) {
+            showError('Please enter your X-API-KEY above.');
+            return;
+        }
+
+        outputArea.textContent = 'Converting...';
+
+        try {
+            const response = await fetch(`/api/convert?value=${valueInput}&unit=${unitInput}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-KEY': apiKey
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || `Server Error: ${response.status}`);
+            }
+
+            outputArea.textContent =
+                'Conversion Successful!\n' +
+                'ID: ' + data.id + '\n' +
+                'Value: ' + data.inputTemperature + ' ' + data.inputUnit + '\n' +
+                'Result: ' + data.outputTemperature + ' ' + data.outputUnit + '\n' +
+                'Timestamp: ' + data.timestamp;
+        } catch (error) {
+            showError(error.message);
+        }
+    }
+
+    async function checkSafety() {
+        const valueInput = document.getElementById('tempValue').value;
+        const unitInput = document.getElementById('tempUnit').value;
+        const outputArea = document.getElementById('outputArea');
+
+        if (!valueInput) {
+            showError('Please enter a numeric temperature value.');
+            return;
+        }
+
+        outputArea.textContent = 'Checking...';
+
+        try {
+            const response = await fetch(`/api/safety-check?value=${valueInput}&unit=${unitInput}`);
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || `Server Error: ${response.status}`);
+            }
+
+            outputArea.textContent = data.message;
+        } catch (error) {
+            showError(error.message);
+        }
+    }
+
+    async function viewHistory() {
+        const outputArea = document.getElementById('outputArea');
+        const apiKey = getApiKey();
+
+        if (!apiKey) {
+            showError('Please enter your X-API-KEY above.');
+            return;
+        }
+
+        outputArea.textContent = 'Loading history...';
+
+        try {
+            const response = await fetch('/api/history', {
+                headers: {
+                    'X-API-KEY': apiKey
+                }
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || `Server Error: ${response.status}`);
+            }
+
+            if (data.length === 0) {
+                outputArea.textContent = 'No records found yet.';
+                return;
+            }
+
+            outputArea.textContent = data.map(log =>
+                `${log.inputTemperature} ${log.inputUnit} -> ${log.outputTemperature} ${log.outputUnit}  (${log.timestamp})`
+            ).join('\n');
+        } catch (error) {
+            showError(error.message);
+        }
+    }
+</script>
+
+</body>
+</html>

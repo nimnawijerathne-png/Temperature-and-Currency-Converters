@@ -1,0 +1,59 @@
+version: '3.8'
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb-data:
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - app-network
+
+  temp-backend:
+    build: ./tempconverter
+    container_name: temp-backend-container
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  temp-frontend:
+    build: ./tem_frontend
+    container_name: temp-frontend-container
+    ports:
+      - "3000:3000"
+    depends_on:
+      - temp-backend
+    networks:
+      - app-network
+
+  currency-backend:
+    build: ./currencyconverter
+    container_name: currency-backend-container
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  currency-frontend:
+    build: ./cur_frontend
+    container_name: currency-frontend-container
+    ports:
+      - "3001:3001"
+    depends_on:
+      - currency-backend
+    networks:
+      - app-network
